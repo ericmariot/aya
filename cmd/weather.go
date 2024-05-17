@@ -10,13 +10,9 @@ import (
 	"net/http"
 	"strings"
 	"time"
-	"unicode"
 
 	"github.com/guptarohit/asciigraph"
 	"github.com/spf13/cobra"
-	"golang.org/x/text/runes"
-	"golang.org/x/text/transform"
-	"golang.org/x/text/unicode/norm"
 )
 
 // weatherCmd represents the weather command
@@ -25,51 +21,28 @@ var weatherCmd = &cobra.Command{
 	Short: "Get the weather for a specified city",
 	Long: `Get the weather for a specified city. For example:
 
+	aya weather
 	aya weather criciuma
 	aya weather san-diego
 	aya weather london --graph
 	`,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		var city string
 		if len(args) == 0 {
-			city, err := getCity()
+			config, err := loadConfig()
 			if err != nil {
-				fmt.Println("Error: ", err)
+				fmt.Println("Error loading config:", err)
+				return
 			}
-
-			graph, err := cmd.Flags().GetBool("graph")
-			if err != nil {
-				fmt.Println("Error: ", err)
-			}
-
-			normalized, err := normalizeCity(city)
-			if err != nil {
-				fmt.Println("Error: ", err)
-			}
-
-			currentWeather(normalized, graph)
+			city = config.City
+			fmt.Println("Using default city from config:", city)
 		} else {
-			city := args[0]
-			graph, err := cmd.Flags().GetBool("graph")
-			if err != nil {
-				fmt.Println("Error: ", err)
-			}
-
-			normalized, err := normalizeCity(city)
-			if err != nil {
-				fmt.Println("Error: ", err)
-			}
-
-			currentWeather(normalized, graph)
+			city = normalizeCityName(args[0])
 		}
-
+		graph, _ := cmd.Flags().GetBool("graph")
+		currentWeather(city, graph)
 	},
-}
-
-func normalizeCity(s string) (string, error) {
-	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
-	result, _, err := transform.String(t, s)
-	return result, err
 }
 
 func init() {
@@ -211,55 +184,4 @@ func plotGraph(weather Weather) {
 	result.WriteString("\n")
 
 	fmt.Println(result.String())
-}
-
-func getIPAddress() (string, error) {
-	resp, err := http.Get("https://httpbin.org/ip")
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	var result map[string]string
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return "", err
-	}
-
-	return result["origin"], nil
-}
-
-func getCityFromIP(ip string) (string, error) {
-	resp, err := http.Get(fmt.Sprintf("https://ipinfo.io/%s/json", ip))
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	var ipInfo IPInfo
-	if err := json.Unmarshal(body, &ipInfo); err != nil {
-		return "", err
-	}
-
-	return ipInfo.City, nil
-}
-
-func getCity() (string, error) {
-	ip, err := getIPAddress()
-	if err != nil {
-		fmt.Println("Error getting IP address:", err)
-		return "", err
-	}
-
-	city, err := getCityFromIP(ip)
-	if err != nil {
-		fmt.Println("Error getting city from IP:", err)
-		return "", err
-	}
-
-	return city, nil
 }
