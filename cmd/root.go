@@ -14,6 +14,9 @@ var rootCmd = &cobra.Command{
 	Use:   "aya",
 	Short: "A brief description of your application",
 	Long:  `Welcome!`,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		initConfig()
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
