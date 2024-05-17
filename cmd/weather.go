@@ -15,7 +15,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// weatherCmd represents the weather command
 var weatherCmd = &cobra.Command{
 	Use:   "weather [city]",
 	Short: "Get the weather for a specified city",
@@ -36,7 +35,6 @@ var weatherCmd = &cobra.Command{
 				return
 			}
 			city = config.City
-			fmt.Println("Using default city from config:", city)
 		} else {
 			city = normalizeCityName(args[0])
 		}
@@ -78,7 +76,7 @@ type IPInfo struct {
 
 func getWeather(city string) (Weather, error) {
 	fmt.Println("🌎 Getting coordinates for", strings.ToUpper(string(city[0]))+city[1:])
-	lat, lon, _, err := cityToGeoLoc(city)
+	lat, lon, err := getCoordinates(city)
 	if err != nil {
 		return Weather{}, fmt.Errorf("error getting coordinates: %v", err)
 	}
@@ -102,6 +100,28 @@ func getWeather(city string) (Weather, error) {
 	}
 
 	return weather, nil
+}
+
+func getCoordinates(city string) (string, string, error) {
+	config, err := loadConfig()
+	if err != nil {
+		return "", "", err
+	}
+
+	coords, ok := config.CityCoordinates[city]
+	if ok {
+		return coords.Latitude, coords.Longitude, nil
+	}
+
+	lat, lon, name, err := cityToGeoLoc(city)
+	if err != nil {
+		fmt.Println("Error: ", err)
+	}
+
+	config.CityCoordinates[city] = CityCoordinates{Latitude: lat, Longitude: lon, Name: name}
+	saveConfig(config)
+
+	return lat, lon, nil
 }
 
 func cityToGeoLoc(city string) (string, string, string, error) {

@@ -15,8 +15,9 @@ import (
 )
 
 type Config struct {
-	City   string
-	LastIP string
+	City            string                     `json:"city"`
+	LastIP          string                     `json:"last_ip"`
+	CityCoordinates map[string]CityCoordinates `json:"city_coordinates"`
 }
 
 var configFilePath string
@@ -43,7 +44,12 @@ func initConfig() {
 			fmt.Println("Error getting city from IP:", err)
 			return
 		}
-		config = Config{City: normalizeCityName(city), LastIP: currentIP}
+
+		config = Config{
+			City:            normalizeCityName(city),
+			LastIP:          currentIP,
+			CityCoordinates: make(map[string]CityCoordinates),
+		}
 		saveConfig(config)
 	} else {
 		config, err = loadConfig()
@@ -51,6 +57,7 @@ func initConfig() {
 			fmt.Println("Error loading config:", err)
 			return
 		}
+
 		if config.LastIP != currentIP {
 			fmt.Println("IP address has changed. Updating city...")
 			city, err := getCityFromIP(currentIP)
@@ -73,6 +80,11 @@ func loadConfig() (Config, error) {
 	}
 	defer file.Close()
 	err = json.NewDecoder(file).Decode(&config)
+
+	if config.CityCoordinates == nil {
+		config.CityCoordinates = make(map[string]CityCoordinates)
+	}
+
 	return config, err
 }
 
