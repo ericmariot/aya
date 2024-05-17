@@ -1,1 +1,1 @@
-# aya-cli
+# aya

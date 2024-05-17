@@ -1,4 +1,4 @@
-module github.com/ericmariot/aya-cli
+module github.com/ericmariot/aya
 
 go 1.22.2
 
