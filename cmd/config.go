@@ -7,8 +7,11 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"unicode"
 
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
@@ -146,4 +149,9 @@ func normalizeCityName(s string) string {
 	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
 	result, _, _ := transform.String(t, s)
 	return result
+}
+
+func formatCityName(city string) string {
+	city = strings.ReplaceAll(city, "-", " ")
+	return cases.Title(language.English, cases.NoLower).String(city)
 }

@@ -79,7 +79,7 @@ type IPInfo struct {
 }
 
 func getWeather(city string) (Weather, error) {
-	fmt.Println("🌎 Getting coordinates for", strings.ToUpper(string(city[0]))+city[1:])
+	fmt.Println("🌎 Getting coordinates for", formatCityName(city))
 	lat, lon, err := getCoordinates(city)
 	if err != nil {
 		return Weather{}, fmt.Errorf("error getting coordinates: %v", err)
