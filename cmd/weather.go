@@ -31,14 +31,18 @@ var weatherCmd = &cobra.Command{
 		if len(args) == 0 {
 			config, err := loadConfig()
 			if err != nil {
-				fmt.Println("Error loading config:", err)
+				fmt.Println("error loading config:", err)
 				return
 			}
 			city = config.City
 		} else {
 			city = normalizeCityName(args[0])
 		}
-		graph, _ := cmd.Flags().GetBool("graph")
+		graph, err := cmd.Flags().GetBool("graph")
+		if err != nil {
+			fmt.Println("error: ", err)
+		}
+
 		currentWeather(city, graph)
 	},
 }
@@ -84,7 +88,7 @@ func getWeather(city string) (Weather, error) {
 	fmt.Println("🌤️  Getting weather")
 	res, err := http.Get("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current=temperature_2m,precipitation,is_day&hourly=temperature_2m,precipitation_probability,cloud_cover&timezone=auto&forecast_days=2")
 	if err != nil {
-		return Weather{}, fmt.Errorf("error getting coordinates: %v", err)
+		return Weather{}, fmt.Errorf("error getting weather: %v", err)
 	}
 	defer res.Body.Close()
 
@@ -96,7 +100,7 @@ func getWeather(city string) (Weather, error) {
 	var weather Weather
 	err = json.Unmarshal(body, &weather)
 	if err != nil {
-		return Weather{}, fmt.Errorf("error getting coordinates: %v", err)
+		return Weather{}, fmt.Errorf("error converting json: %v", err)
 	}
 
 	return weather, nil
@@ -152,7 +156,7 @@ func parseToTime(timeString string) time.Time {
 
 	t, err := time.Parse(layout, timeString)
 	if err != nil {
-		fmt.Println("Error parsing time:", err)
+		fmt.Println("error parsing time:", err)
 	}
 
 	return t
@@ -194,6 +198,7 @@ func plotGraph(weather Weather) {
 	labelWidth := 100 / len(labels)
 	initialOffset := 5
 	result.WriteString(strings.Repeat(" ", initialOffset))
+
 	for i, label := range labels {
 		if i%2 == 0 {
 			result.WriteString(fmt.Sprintf("%-*s", labelWidth, label))

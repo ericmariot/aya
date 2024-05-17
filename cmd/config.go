@@ -25,23 +25,24 @@ var configFilePath string
 func initConfig() {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Println("Error finding home directory:", err)
+		fmt.Println("error finding home directory:", err)
 		os.Exit(1)
 	}
 	configFilePath = filepath.Join(homeDir, ".aya.json")
 
 	currentIP, err := getIPAddress()
 	if err != nil {
-		fmt.Println("Error getting IP address:", err)
+		fmt.Println("error getting IP address:", err)
 		return
 	}
 
 	var config Config
-	if _, err := os.Stat(configFilePath); os.IsNotExist(err) {
+	_, err = os.Stat(configFilePath)
+	if os.IsNotExist(err) {
 		fmt.Println("Config file does not exist. Creating new one...")
 		city, err := getCityFromIP(currentIP)
 		if err != nil {
-			fmt.Println("Error getting city from IP:", err)
+			fmt.Println("error getting city from IP:", err)
 			return
 		}
 
@@ -54,7 +55,7 @@ func initConfig() {
 	} else {
 		config, err = loadConfig()
 		if err != nil {
-			fmt.Println("Error loading config:", err)
+			fmt.Println("error loading config:", err)
 			return
 		}
 
@@ -62,7 +63,7 @@ func initConfig() {
 			fmt.Println("IP address has changed. Updating city...")
 			city, err := getCityFromIP(currentIP)
 			if err != nil {
-				fmt.Println("Error getting city from IP:", err)
+				fmt.Println("error getting city from IP:", err)
 				return
 			}
 			config.City = normalizeCityName(city)
@@ -91,13 +92,13 @@ func loadConfig() (Config, error) {
 func saveConfig(config Config) {
 	file, err := os.Create(configFilePath)
 	if err != nil {
-		fmt.Println("Error creating config file:", err)
+		fmt.Println("error creating config file:", err)
 		return
 	}
 	defer file.Close()
 	err = json.NewEncoder(file).Encode(config)
 	if err != nil {
-		fmt.Println("Error encoding config:", err)
+		fmt.Println("error encoding config:", err)
 	}
 }
 
@@ -109,7 +110,8 @@ func getIPAddress() (string, error) {
 	defer resp.Body.Close()
 
 	var result map[string]string
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
 		return "", err
 	}
 
@@ -131,7 +133,9 @@ func getCityFromIP(ip string) (string, error) {
 	var ipInfo struct {
 		City string `json:"city"`
 	}
-	if err := json.Unmarshal(body, &ipInfo); err != nil {
+
+	err = json.Unmarshal(body, &ipInfo)
+	if err != nil {
 		return "", err
 	}
 
