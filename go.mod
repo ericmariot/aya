@@ -5,6 +5,7 @@ go 1.22.2
 require (
 	github.com/guptarohit/asciigraph v0.7.1
 	github.com/spf13/cobra v1.8.0
+	golang.org/x/text v0.15.0
 )
 
 require (
