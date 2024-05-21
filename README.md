@@ -13,10 +13,10 @@ go get github.com/ericmariot/aya
 ## Usage
 Here are some basic usage examples:
 
-##### Get Weather Information for Your Current Location.
+#### Get Weather Information for your current location.
 To get the weather information based on your IP address, simply run:
 
-```sh
+```
 $ aya weather
 🌎 Getting coordinates for Criciuma
 🌤️  Getting weather
@@ -25,21 +25,21 @@ Last update: 20:15
 Current: 13.9°C
 ```
 
-##### To get the weather information for a specified city, use the weather command:
+#### To get the weather information for a specified city, use the weather command:
 ```sh
-aya weather [city_name]
+$ aya weather [city_name]
 ```
 For example:
 
 ```sh
-aya weather san-francisco
+$ aya weather san-francisco
 ```
  
-##### Use the Graph Flag
+#### Use the Graph Flag
 To display the weather information in a graphical format, use the --graph flag:
 
 ```sh
-aya weather san-francisco --graph
+$ aya weather san-francisco --graph
 ```
 
 ## Config File
