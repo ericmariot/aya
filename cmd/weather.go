@@ -208,7 +208,7 @@ func currentWeather(city string, graph bool) {
 
 	fmt.Println(weather.Timezone, "TZ")
 	fmt.Println("Last update:", parsedTime.Format("15:04"))
-	fmt.Printf("Current: %.1f°C\n\n", weather.Current.Temperature)
+	fmt.Printf("Current: %.1f°C\n", weather.Current.Temperature)
 	if graph {
 		fmt.Printf("\n")
 		plotGraph(weather)
