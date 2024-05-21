@@ -57,7 +57,7 @@ configFilePath = filepath.Join(homeDir, ".aya.json")
 ```
 
 It is used to save your current location from the IP Address, and also caches cities that are used in the `weather` command!
-You can clear the config file with `aya clearConfig`
+You can clear the config file with `$ aya clearConfig`
 
 #### License
 [MIT](LICENSE)
