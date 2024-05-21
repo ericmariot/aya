@@ -11,7 +11,13 @@ go get github.com/ericmariot/aya
 ```
 
 ## Usage
-Here are some basic usage examples:
+Some basic usage examples:
+
+```
+$ aya
+```
+<img width="206" alt="image" src="https://github.com/ericmariot/aya/assets/29050845/b1584e76-d92c-4f57-82d8-6f35720bd18e">
+
 
 #### Get Weather Information for your current location.
 To get the current weather information based on your IP address, simply run:
@@ -41,10 +47,17 @@ To display the weather information in a graphical format, use the --graph flag:
 ```sh
 $ aya weather san-francisco --graph
 ```
+<img width="843" alt="image" src="https://github.com/ericmariot/aya/assets/29050845/532d8bf4-ecd7-4cfd-ab99-641aab788365">
 
 ## Config File
--- TODO
+A config file is saved at:
+```
+homeDir := os.UserHomeDir()
+configFilePath = filepath.Join(homeDir, ".aya.json")
+```
 
+It is used to save your current location from the IP Address, and also caches cities that are used in the `weather` command!
+You can clear the config file with `aya clearConfig`
 
 #### License
 [MIT](LICENSE)
