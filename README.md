@@ -4,11 +4,16 @@
 `aya` is a personal CLI in development!
 
 ## Installation
-To install `aya`, run the following command:
+### Using Pre-built Binaries
 
-```sh
-go get github.com/ericmariot/aya
-```
+You can download the pre-built binaries from the [releases page](https://github.com/ericmariot/aya/releases) and add the binary to your PATH.
+
+1. Download the binary for your operating system from the releases page.
+2. Move the binary to a directory included in your PATH. For example, for Linux:
+
+   ```bash
+   mv aya-linux /usr/local/bin/aya
+   chmod +x /usr/local/bin/aya
 
 ## Usage
 Here are some basic usage examples:
