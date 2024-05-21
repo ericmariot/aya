@@ -17,8 +17,8 @@ import (
 
 var weatherCmd = &cobra.Command{
 	Use:   "weather [city]",
-	Short: "Get the weather for a specified city",
-	Long: `Get the weather for a specified city. For example:
+	Short: "Get the current weather for a specified city",
+	Long: `Get the current weather for a specified city. For example:
 
 	aya weather
 	aya weather criciuma
