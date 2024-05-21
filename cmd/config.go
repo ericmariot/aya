@@ -1,3 +1,6 @@
+/*
+Copyright © 2024 github.com/ericmariot <ericmariots@gmail.com>
+*/
 package cmd
 
 import (
@@ -69,6 +72,7 @@ func initConfig() {
 				fmt.Println("error getting city from IP:", err)
 				return
 			}
+
 			config.City = normalizeCityName(city)
 			config.LastIP = currentIP
 			saveConfig(config)
@@ -92,17 +96,19 @@ func loadConfig() (Config, error) {
 	return config, err
 }
 
-func saveConfig(config Config) {
+func saveConfig(config Config) error {
 	file, err := os.Create(configFilePath)
 	if err != nil {
-		fmt.Println("error creating config file:", err)
-		return
+		return fmt.Errorf("error creating config file: %w", err)
 	}
 	defer file.Close()
+
 	err = json.NewEncoder(file).Encode(config)
 	if err != nil {
-		fmt.Println("error encoding config:", err)
+		return fmt.Errorf("error encoding config: %w", err)
 	}
+
+	return nil
 }
 
 func getIPAddress() (string, error) {
@@ -148,6 +154,7 @@ func getCityFromIP(ip string) (string, error) {
 func normalizeCityName(s string) string {
 	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
 	result, _, _ := transform.String(t, s)
+	result = strings.ToLower(result)
 	return result
 }
 

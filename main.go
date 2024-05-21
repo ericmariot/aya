@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 ericmariot <ericmariots@gmail.com>
+Copyright © 2024 github.com/ericmariot <ericmariots@gmail.com>
 */
 package main
 
