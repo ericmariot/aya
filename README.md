@@ -7,7 +7,7 @@
 To install `aya`, run the following command:
 
 ```sh
-go get github.com/ericmariot/aya
+go install github.com/ericmariot/aya@latest
 ```
 
 ## Usage
